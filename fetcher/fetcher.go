@@ -12,7 +12,8 @@ import (
 	"net/http"
 )
 
-func Fetch(url string) ([]byte, error) {
+// origin
+func BaseFetch(url string) ([]byte, error) {
 	resp, err := http.Get("https://book.douban.com")
 	if err != nil {
 		panic(err)
@@ -24,6 +25,25 @@ func Fetch(url string) ([]byte, error) {
 		fmt.Println("Error status code:% d", resp.StatusCode)
 	}
 
+	bodyReader := bufio.NewReader(resp.Body)
+	e := DeterminEncoding(bodyReader)
+
+	utf8Reader := transform.NewReader(bodyReader, e.NewDecoder())
+
+	return ioutil.ReadAll(utf8Reader)
+
+}
+
+// 模拟浏览器
+func Fetch(url string) ([]byte, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("ERROR:get url:%s", url)
+	}
+
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36")
+	resp, err := client.Do(req)
 	bodyReader := bufio.NewReader(resp.Body)
 	e := DeterminEncoding(bodyReader)
 
