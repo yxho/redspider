@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-const BooklistRe = `<a href="([^"]+" title="([^"}+)" onclick="moreurl`
+const BooklistRe = `<a href="([^"]+" title="([^"}+)"`
 
 func ParseBookList(contents []byte) engine.ParseResult {
 	re := regexp.MustCompile(BooklistRe)
