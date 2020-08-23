@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 // origin
@@ -35,7 +36,9 @@ func BaseFetch(url string) ([]byte, error) {
 }
 
 // 模拟浏览器
+var ratelimit = time.Tick(1000*time.Millisecond)
 func Fetch(url string) ([]byte, error) {
+	<-ratelimit
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

@@ -6,6 +6,10 @@ import (
 	"redspider/fetcher"
 )
 
+type simpleEngine struct{
+
+}
+
 func Run(seeds ...Request) {
 	var requests []Request
 	for _, e := range seeds {
