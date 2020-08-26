@@ -2,7 +2,13 @@ package engine
 
 type ParseResult struct {
 	Requests []Request
-	Items []interface{}
+	Items []Item
+}
+
+type Item struct{
+	Url string
+	Type string
+	Payload interface{}
 }
 
 type Request struct{

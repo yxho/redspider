@@ -8,10 +8,14 @@ import (
 )
 
 func main() {
+	itemsave, err := persist.ItemSave()
+	if err != nil {
+		panic(err)
+	}
 	e := engine.ConcurrentEngine{
 		&scheduler.QueueScheduler{},
 		100,
-		persist.ItemSave(),
+		itemsave,
 	}
 	e.Run(engine.Request{
 		Url:       "https://book.douban.com/",

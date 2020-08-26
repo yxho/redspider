@@ -14,7 +14,7 @@ var priceRe = regexp.MustCompile(`<span class="pl">定价:</span>([^<]+)<br/>`)
 var scoreRe = regexp.MustCompile(`<strong class="ll rating_num " property="v:average">([^<]+)</strong>`)
 var introRe = regexp.MustCompile(`<div class="intro">[\d\D]*?<p>([^<]+)</p></div>`)
 
-func ParseBookDetail(contents []byte,bookname string) engine.ParseResult {
+func ParseBookDetail(url string, contents []byte, bookname string) engine.ParseResult {
 	bookdetail := model.BookDetail{}
 	bookdetail.Author = ExtraString(contents, autoRe)
 	page, err := strconv.Atoi(ExtraString(contents, pageRe))
@@ -27,7 +27,14 @@ func ParseBookDetail(contents []byte,bookname string) engine.ParseResult {
 	bookdetail.Score = ExtraString(contents, scoreRe)
 	bookdetail.Price = ExtraString(contents, priceRe)
 	result := engine.ParseResult{
-		Items: []interface{}{bookdetail},
+		Items: []engine.Item{
+			//bookdetail
+			{
+				Url:     url,
+				Type:    "douban",
+				Payload: bookdetail,
+			},
+		},
 	}
 	return result
 

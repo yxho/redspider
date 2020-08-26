@@ -14,11 +14,11 @@ func ParseBookList(contents []byte) engine.ParseResult {
 
 	for _, m := range matches {
 		bookname := string(m[2])
-		result.Items = append(result.Items, string(m[2]))
+		//result.Items = append(result.Items, string(m[2]))
 		result.Requests = append(result.Requests, engine.Request{
 			Url: string(m[1]),
 			ParseFunc: func(c []byte) engine.ParseResult {
-				return ParseBookDetail(c, bookname)
+				return ParseBookDetail(string(m[1]), c, bookname)
 			},
 		})
 	}

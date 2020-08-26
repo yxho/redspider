@@ -2,34 +2,42 @@ package persist
 
 import (
 	"context"
+	"errors"
 	"gopkg.in/olivere/elastic.v5"
 	"log"
+	"redspider/engine"
 )
 
-func ItemSave() chan interface{} {
-	out := make(chan interface{})
+func ItemSave() (chan engine.Item,error) {
+	client, err := elastic.NewClient(
+		elastic.SetSniff(false))
+	if err!=nil{
+		return nil,err
+	}
+	out := make(chan engine.Item)
 	go func() {
 		itemcount := 0
 		for {
 			item := <-out
 			log.Printf("Item saver :Got$%d,%v", itemcount, item)
-			save(item)
+			save(client,item)
 			itemcount++
 		}
 	}()
-	return out
+	return out,nil
 }
 
-func save(item interface{}) {
-	client, err := elastic.NewClient(
-		elastic.SetSniff(false))
+func save(client *elastic.Client, item engine.Item) error {
+
+	if item.Type == "" {
+		return errors.New("must supply type")
+	}
+
+	_, err := client.Index().Index("dating_profile").Type(item.Type).BodyJson(item).Do(context.Background())
 
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = client.Index().Index("dating_profile").Type("douban").BodyJson(item).Do(context.Background())
-	if err != nil {
-		panic(err)
-	}
+	return nil
 }
