@@ -8,11 +8,11 @@ import (
 	"redspider/engine"
 )
 
-func ItemSave() (chan engine.Item,error) {
+func ItemSave() (chan engine.Item, error) {
 	client, err := elastic.NewClient(
 		elastic.SetSniff(false))
-	if err!=nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 	out := make(chan engine.Item)
 	go func() {
@@ -20,14 +20,14 @@ func ItemSave() (chan engine.Item,error) {
 		for {
 			item := <-out
 			log.Printf("Item saver :Got$%d,%v", itemcount, item)
-			save(client,item)
+			Save(client, item)
 			itemcount++
 		}
 	}()
-	return out,nil
+	return out, nil
 }
 
-func save(client *elastic.Client, item engine.Item) error {
+func Save(client *elastic.Client, item engine.Item) error {
 
 	if item.Type == "" {
 		return errors.New("must supply type")
