@@ -8,7 +8,7 @@ import (
 
 const regexpStr = `<a href="([^"]+)" class="tag">([^<]+)</a>`
 
-func ParseTag(content []byte) engine.ParseResult {
+func ParseTag(content []byte, _ string) engine.ParseResult {
 	re := regexp.MustCompile(regexpStr)
 	match := re.FindAllSubmatch(content, -1)
 	result := engine.ParseResult{}
@@ -18,8 +18,8 @@ func ParseTag(content []byte) engine.ParseResult {
 
 		//result.Items = append(result.Items, m[2])
 		result.Requests = append(result.Requests, engine.Request{
-			Url:       "https://book.douban.com" + string(m[1]),
-			ParseFunc: ParseBookList,
+			Url:   "https://book.douban.com" + string(m[1]),
+			Parse: engine.NewFuncParse(ParseBookList, "booklist"),
 		})
 	}
 	return result

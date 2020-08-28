@@ -19,6 +19,6 @@ func main() {
 	}
 	e.Run(engine.Request{
 		Url:       "https://book.douban.com/",
-		ParseFunc: parse.ParseTag,
+		Parse: engine.NewFuncParse(parse.ParseTag,"booklist"),
 	})
 }

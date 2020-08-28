@@ -49,3 +49,21 @@ func ExtraString(contents []byte, re *regexp.Regexp) string {
 		return ""
 	}
 }
+
+type BookDetailParse struct {
+	bookName string
+}
+
+func (b *BookDetailParse) Parser(contents []byte, url string) engine.ParseResult {
+	return ParseBookDetail(url,contents,b.bookName)
+}
+
+func (b *BookDetailParse) Serialize() (name string, args interface{}) {
+	return "BookDetailParse",b.bookName
+}
+
+func NewBookDetailParse(name string)*BookDetailParse{
+	return &BookDetailParse{
+		bookName: name,
+	}
+}

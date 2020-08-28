@@ -67,6 +67,6 @@ func worker(request Request) (ParseResult, error) {
 		log.Printf("Fetch Error:%s\n", request.Url)
 		return ParseResult{}, err
 	}
-	return request.ParseFunc(body), nil
+	return request.Parse.Parser(body,request.Url), nil
 
 }

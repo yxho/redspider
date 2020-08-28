@@ -7,7 +7,7 @@ import (
 
 const BooklistRe = `<a href="([^"]+)" title="([^"]+)"`
 
-func ParseBookList(contents []byte) engine.ParseResult {
+func ParseBookList(contents []byte, _ string) engine.ParseResult {
 	re := regexp.MustCompile(BooklistRe)
 	matches := re.FindAllSubmatch(contents, -1)
 	result := engine.ParseResult{}
@@ -17,10 +17,10 @@ func ParseBookList(contents []byte) engine.ParseResult {
 		//result.Items = append(result.Items, string(m[2]))
 		result.Requests = append(result.Requests, engine.Request{
 			Url: string(m[1]),
-			ParseFunc: func(c []byte) engine.ParseResult {
-				return ParseBookDetail(string(m[1]), c, bookname)
-			},
+			Parse: NewBookDetailParse(bookname),
 		})
 	}
 	return result
 }
+
+
