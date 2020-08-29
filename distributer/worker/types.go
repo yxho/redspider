@@ -1,8 +1,11 @@
 package worker
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"redspider/engine"
+	"redspider/parse"
 )
 
 type SerializeParser struct{
@@ -68,10 +71,24 @@ func DeserializeRequest(r Request) (engine.Request,error) {
 
 }
 
-func deserializeParse(parse SerializeParser) (engine.Parser,error) {
-	switch parse.Name{
-	case "booklist"
+func deserializeParse(p SerializeParser) (engine.Parser,error) {
+	switch p.Name{
+	case "booklist":
+		return engine.NewFuncParse(parse.ParseTag,"booklist"),nil
+	case "parseBook":
+		return engine.NewFuncParse(parse.ParseBookList,"parseBook"),nil
+	case "BookDetailParse":
+		if useName,ok:=p.Args.(string);ok{
+			return parse.NewBookDetailParse(useName),nil
+		}else{
+			return nil,fmt.Errorf("Invilid args:%v",p.Args)
+		}
+	case "Nilparse":
+		return engine.NilParse{},nil
+	default:
+		return nil,errors.New("unkown parse name")
 	}
+
 }
 
 

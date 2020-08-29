@@ -19,7 +19,7 @@ func ParseTag(content []byte, _ string) engine.ParseResult {
 		//result.Items = append(result.Items, m[2])
 		result.Requests = append(result.Requests, engine.Request{
 			Url:   "https://book.douban.com" + string(m[1]),
-			Parse: engine.NewFuncParse(ParseBookList, "booklist"),
+			Parse: engine.NewFuncParse(ParseBookList, "parseBook"),
 		})
 	}
 	return result
