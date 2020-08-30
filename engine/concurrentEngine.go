@@ -6,10 +6,13 @@ import (
 	"redspider/fetcher"
 )
 
+type Processor func(request Request) (ParseResult, error)
+
 type ConcurrentEngine struct {
-	Scheduler Scheduler
-	WorkCount int
-	ItemChan  chan Item
+	Scheduler        Scheduler
+	WorkCount        int
+	ItemChan         chan Item
+	RequestProcessor Processor
 }
 type Scheduler interface {
 	Submit(Request)
@@ -24,7 +27,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	e.Scheduler.Run()
 
 	for i := 0; i < e.WorkCount; i++ {
-		CreateWork(out, e.Scheduler)
+		e.CreateWork(out, e.Scheduler)
 	}
 	for _, r := range seeds {
 		e.Scheduler.Submit(r)
@@ -44,13 +47,13 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 }
 
-func CreateWork(out chan ParseResult, s Scheduler) {
+func (e *ConcurrentEngine) CreateWork(out chan ParseResult, s Scheduler) {
 	in := make(chan Request)
 	go func() {
 		for {
 			s.WorkReady(in)
 			request := <-in
-			result, err := worker(request)
+			result, err := e.RequestProcessor(request)
 
 			if err != nil {
 				continue
@@ -60,13 +63,13 @@ func CreateWork(out chan ParseResult, s Scheduler) {
 	}()
 }
 
-func worker(request Request) (ParseResult, error) {
+func Worker(request Request) (ParseResult, error) {
 	fmt.Printf("Fetch url:%s\n", request.Url)
 	body, err := fetcher.Fetch(request.Url)
 	if err != nil {
 		log.Printf("Fetch Error:%s\n", request.Url)
 		return ParseResult{}, err
 	}
-	return request.Parse.Parser(body,request.Url), nil
+	return request.Parse.Parser(body, request.Url), nil
 
 }

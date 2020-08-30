@@ -55,14 +55,14 @@ type BookDetailParse struct {
 }
 
 func (b *BookDetailParse) Parser(contents []byte, url string) engine.ParseResult {
-	return ParseBookDetail(url,contents,b.bookName)
+	return ParseBookDetail(url, contents, b.bookName)
 }
 
 func (b *BookDetailParse) Serialize() (name string, args interface{}) {
-	return "BookDetailParse",b.bookName
+	return "BookDetailParse", b.bookName
 }
 
-func NewBookDetailParse(name string)*BookDetailParse{
+func NewBookDetailParse(name string) *BookDetailParse {
 	return &BookDetailParse{
 		bookName: name,
 	}

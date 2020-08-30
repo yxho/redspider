@@ -35,7 +35,7 @@ type ParseFunc func(contents []byte, url string) ParseResult
 
 type FuncParser struct {
 	Parser_ ParseFunc
-	name   string
+	name    string
 }
 
 func (f FuncParser) Parser(contents []byte, url string) ParseResult {
@@ -46,9 +46,9 @@ func (f FuncParser) Serialize() (name string, args interface{}) {
 	return f.name, nil
 }
 
-func NewFuncParse(p ParseFunc,name string)* FuncParser{
+func NewFuncParse(p ParseFunc, name string) *FuncParser {
 	return &FuncParser{
 		Parser_: p,
-		name:name,
+		name:    name,
 	}
 }

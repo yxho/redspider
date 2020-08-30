@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	//"net/url"
 	"time"
 )
 
@@ -36,13 +37,18 @@ func BaseFetch(url string) ([]byte, error) {
 }
 
 // 模拟浏览器
-var ratelimit = time.Tick(1000*time.Millisecond)
-func Fetch(url string) ([]byte, error) {
+var ratelimit = time.Tick(300 * time.Millisecond)
+
+func Fetch(weburl string) ([]byte, error) {
 	<-ratelimit
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
+	//proxy := func(_*http.Request)(*url.URL,error){
+	//	return url.Parse("http://127.0.0.1:51816")
+	//}
+	//transport := &http.Transport{Proxy: proxy}
+	client := &http.Client{ /*Transport: transport*/ }
+	req, err := http.NewRequest("GET", weburl, nil)
 	if err != nil {
-		return nil, fmt.Errorf("ERROR:get url:%s", url)
+		return nil, fmt.Errorf("ERROR:get url:%s", weburl)
 	}
 
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36")

@@ -19,12 +19,12 @@ type Request struct{
 }
 
 type ParseResult struct{
-	items []engine.Item
+	Items []engine.Item
 	Requests []Request
 }
 
 func SerializeResult(r engine.ParseResult)ParseResult{
-	result := ParseResult{items: r.Items}
+	result := ParseResult{Items: r.Items}
 
 	for _,req := range r.Requests{
 		result.Requests=append(result.Requests,SerializeRequest(req))
@@ -46,7 +46,7 @@ func SerializeRequest(r engine.Request) Request {
 
 func DeserializeResult(r ParseResult)engine.ParseResult{
 	result:=engine.ParseResult{
-		Items: r.items,
+		Items: r.Items,
 	}
 	for _,req:=range r.Requests{
 		engineReq,err:=DeserializeRequest(req)
